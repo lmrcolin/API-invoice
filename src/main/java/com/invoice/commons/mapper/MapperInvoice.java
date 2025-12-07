@@ -10,23 +10,22 @@ import com.invoice.api.entity.Invoice;
 
 @Service
 public class MapperInvoice {
-	
+
 	public List<DtoInvoiceList> toDtoList(List<Invoice> invoices) {
 		List<DtoInvoiceList> dtoInvoices = new ArrayList<>();
-		
+
 		for (Invoice invoice : invoices) {
-			
+
 			DtoInvoiceList dtoInvoice = new DtoInvoiceList(
-		            invoice.getInvoice_id(),
-		            invoice.getUser_id(),
-		            invoice.getCreated_at(),
-		            invoice.getSubtotal(),
-		            invoice.getTaxes(),
-		            invoice.getTotal()
-		        );
+					invoice.getInvoice_id(),
+					invoice.getUser_id(),
+					invoice.getCreated_at() != null ? invoice.getCreated_at().toString() : null,
+					invoice.getSubtotal(),
+					invoice.getTaxes(),
+					invoice.getTotal());
 			dtoInvoices.add(dtoInvoice);
 		}
-         
-         return dtoInvoices;
-    }
+
+		return dtoInvoices;
+	}
 }

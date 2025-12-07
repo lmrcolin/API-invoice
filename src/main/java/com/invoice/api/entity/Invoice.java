@@ -1,10 +1,14 @@
 package com.invoice.api.entity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -13,13 +17,15 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "invoice")
 public class Invoice {
-	
+
 	@Id
-	private String invoice_id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer invoice_id;
 
 	private Integer user_id;
-	
-	private String created_at;
+
+	@Column(name = "created_at")
+	private LocalDate created_at;
 
 	private Double subtotal;
 
@@ -27,16 +33,20 @@ public class Invoice {
 
 	private Double total;
 
+	@Column(name = "status")
+	private Integer status;
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "invoice_id", referencedColumnName = "invoice_id")
+	@JoinColumn(name = "invoice_id", referencedColumnName = "invoice_id")
 	private List<InvoiceItem> items;
-	
+
 	public Invoice() {
-		
+
 	}
 
-	public Invoice(String invoice_id, Integer user_id, String created_at, Double subtotal, Double taxes, Double total,
-			List<InvoiceItem> items) {
+	public Invoice(Integer invoice_id, Integer user_id, LocalDate created_at, Double subtotal, Double taxes,
+			Double total,
+			Integer status, List<InvoiceItem> items) {
 		super();
 		this.invoice_id = invoice_id;
 		this.user_id = user_id;
@@ -44,14 +54,15 @@ public class Invoice {
 		this.subtotal = subtotal;
 		this.taxes = taxes;
 		this.total = total;
+		this.status = status;
 		this.items = items;
 	}
 
-	public String getInvoice_id() {
+	public Integer getInvoice_id() {
 		return invoice_id;
 	}
 
-	public void setInvoice_id(String invoice_id) {
+	public void setInvoice_id(Integer invoice_id) {
 		this.invoice_id = invoice_id;
 	}
 
@@ -63,11 +74,11 @@ public class Invoice {
 		this.user_id = user_id;
 	}
 
-	public String getCreated_at() {
+	public LocalDate getCreated_at() {
 		return created_at;
 	}
 
-	public void setCreated_at(String created_at) {
+	public void setCreated_at(LocalDate created_at) {
 		this.created_at = created_at;
 	}
 
@@ -95,6 +106,14 @@ public class Invoice {
 		this.total = total;
 	}
 
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public List<InvoiceItem> getItems() {
 		return items;
 	}
@@ -103,5 +122,4 @@ public class Invoice {
 		this.items = items;
 	}
 
-	
 }

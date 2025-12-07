@@ -1,24 +1,24 @@
 package com.invoice.api.dto;
 
 public class DtoInvoiceList {
-	
-	private String id;
-	
+
+	private Integer id;
+
 	private Integer user_id;
-		
+
 	private String created_at;
-	
+
 	private Double subtotal;
-	
+
 	private Double taxes;
-	
+
 	private Double total;
-	
+
 	public DtoInvoiceList() {
-		
+
 	}
 
-	public DtoInvoiceList(String id, Integer user_id, String created_at, Double subtotal, Double taxes, Double total) {
+	public DtoInvoiceList(Integer id, Integer user_id, String created_at, Double subtotal, Double taxes, Double total) {
 		super();
 		this.id = id;
 		this.user_id = user_id;
@@ -28,11 +28,11 @@ public class DtoInvoiceList {
 		this.total = total;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -76,5 +76,4 @@ public class DtoInvoiceList {
 		this.total = total;
 	}
 
-	
 }

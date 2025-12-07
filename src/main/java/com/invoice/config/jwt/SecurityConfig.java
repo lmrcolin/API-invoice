@@ -16,24 +16,27 @@ public class SecurityConfig {
 
 	@Autowired
 	private JwtAuthFilter jwtFilter;
-	
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfig corsConfig) throws Exception {
-	
+
 		http.csrf(AbstractHttpConfigurer::disable)
-		.authorizeHttpRequests(
-				auth -> auth
-				.requestMatchers("/error", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/info", "/actuator/health").permitAll()
-				.requestMatchers("/cart-item/**").hasAuthority("CUSTOMER")
-				.requestMatchers(HttpMethod.GET, "/invoice/**").hasAnyAuthority("ADMIN", "CUSTOMER")
-				.requestMatchers(HttpMethod.POST,"/invoice").hasAuthority("CUSTOMER")
-				)
-		.cors(cors -> cors.configurationSource(corsConfig))
-		.httpBasic(Customizer.withDefaults())
-		.formLogin(form -> form.disable())
-		.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-		.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-			
+				.authorizeHttpRequests(
+						auth -> auth
+								.requestMatchers("/error", "/swagger-ui/**", "/v3/api-docs/**", "/actuator/info",
+										"/actuator/health")
+								.permitAll()
+								.requestMatchers("/cart-item/**").hasAuthority("CUSTOMER")
+								.requestMatchers("/item/**").hasAuthority("ADMIN")
+								.requestMatchers(HttpMethod.GET, "/invoice/**").hasAnyAuthority("ADMIN", "CUSTOMER")
+								.requestMatchers(HttpMethod.POST, "/invoice").hasAuthority("CUSTOMER"))
+				.cors(cors -> cors.configurationSource(corsConfig))
+				.httpBasic(Customizer.withDefaults())
+				.formLogin(form -> form.disable())
+				.sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 	}
 }

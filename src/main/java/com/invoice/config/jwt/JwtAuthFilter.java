@@ -18,9 +18,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAuthFilter extends OncePerRequestFilter{
+public class JwtAuthFilter extends OncePerRequestFilter {
 
-	private final JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -29,9 +29,9 @@ public class JwtAuthFilter extends OncePerRequestFilter{
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        
+
         String authHeader = request.getHeader("Authorization");
-        
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
@@ -39,24 +39,37 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
         String token = authHeader.substring(7);
         String username = jwtUtil.extractUsername(token);
+
         List<HashMap<String, String>> permisos = jwtUtil.extractPermisos(token);
-        
         Integer user_id = jwtUtil.extractUserId(token);
         Map<String, Object> payload = new HashMap<>();
         payload.put("id", user_id);
-        
-        List<String> permisosList = permisos.stream().map(i -> i.get("authority")).toList();
-        
+
+        List<String> permisosList = permisos.stream()
+                .map(entry -> {
+                    if (entry.get("authority") != null) {
+                        return entry.get("authority");
+                    }
+                    if (entry.get("role") != null) {
+                        return entry.get("role");
+                    }
+                    if (entry.get("0") != null) {
+                        return entry.get("0");
+                    }
+                    return null;
+                })
+                .filter(role -> role != null && !role.isBlank())
+                .toList();
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = User.withUsername(username)
-            		.password("")
-            		.authorities(permisosList.toArray(new String[0]))
+                    .password("")
+                    .authorities(permisosList.toArray(new String[0]))
                     .build();
 
-            UsernamePasswordAuthenticationToken authToken = 
-                new UsernamePasswordAuthenticationToken(userDetails, payload, userDetails.getAuthorities());
-            
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                    payload, userDetails.getAuthorities());
+
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
 
