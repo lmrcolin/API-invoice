@@ -13,7 +13,7 @@ public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "cart_item_id")
     private Integer cartItemId;
 
     @Column(name = "user_id")

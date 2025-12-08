@@ -141,6 +141,7 @@ public class SvcInvoiceImp implements SvcInvoice {
 				}
 			});
 
+			Invoice invoice = new Invoice();
 			List<InvoiceItem> invoiceItems = new ArrayList<>();
 			BigDecimal total = BigDecimal.ZERO;
 			BigDecimal taxes = BigDecimal.ZERO;
@@ -167,10 +168,10 @@ public class SvcInvoiceImp implements SvcInvoice {
 				invoiceItem.setTaxes(lineTaxes.doubleValue());
 				invoiceItem.setSubtotal(lineSubtotal.doubleValue());
 				invoiceItem.setStatus(INVOICE_ITEM_STATUS_ACTIVE);
+				invoiceItem.setInvoice(invoice);
 				invoiceItems.add(invoiceItem);
 			}
 
-			Invoice invoice = new Invoice();
 			invoice.setUser_id(userId);
 			invoice.setCreated_at(LocalDate.now());
 			invoice.setSubtotal(subtotal.doubleValue());

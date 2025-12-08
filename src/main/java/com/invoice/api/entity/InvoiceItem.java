@@ -2,9 +2,12 @@ package com.invoice.api.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,8 +18,9 @@ public class InvoiceItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer invoice_item_id;
 
-	@Column(name = "invoice_id")
-	private Integer invoice_id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "invoice_id", nullable = false)
+	private Invoice invoice;
 
 	private String gtin;
 
@@ -37,11 +41,11 @@ public class InvoiceItem {
 
 	}
 
-	public InvoiceItem(Integer invoice_item_id, Integer invoice_id, String gtin, Integer quantity, Double unit_price,
+	public InvoiceItem(Integer invoice_item_id, Invoice invoice, String gtin, Integer quantity, Double unit_price,
 			Double subtotal, Double taxes, Double total, Integer status) {
 		super();
 		this.invoice_item_id = invoice_item_id;
-		this.invoice_id = invoice_id;
+		this.invoice = invoice;
 		this.gtin = gtin;
 		this.quantity = quantity;
 		this.unit_price = unit_price;
@@ -59,12 +63,12 @@ public class InvoiceItem {
 		this.invoice_item_id = invoice_item_id;
 	}
 
-	public Integer getInvoice_id() {
-		return invoice_id;
+	public Invoice getInvoice() {
+		return invoice;
 	}
 
-	public void setInvoice_id(Integer invoice_id) {
-		this.invoice_id = invoice_id;
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
 	}
 
 	public String getGtin() {
